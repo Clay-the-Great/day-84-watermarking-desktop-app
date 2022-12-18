@@ -31,44 +31,57 @@ def load_image():
 
 
 def show_image():
-    image = Image.open(file_path)
-    image.show()
+    if file_path == "":
+        file_label.config(text=f"Load a picture first.")
+    else:
+        image = Image.open(file_path)
+        image.show()
 
 
 def add_watermark():
-    image = Image.open(file_path)
-    width, height = image.size
-    draw = ImageDraw.Draw(image)
+    if file_path == "":
+        file_label.config(text=f"Load a picture first.")
+    else:
+        image = Image.open(file_path)
+        width, height = image.size
+        draw = ImageDraw.Draw(image)
 
-    # create watermark
-    text = WATERMARK_TEXT
-    font = ImageFont.truetype('arial.ttf', 20)
-    # text_width, text_height = draw.textsize(text, font)
-    (left, bottom, text_width, text_height) = draw.textbbox(xy=(0, 0), text=text, font=font)
+        # create watermark
+        text = WATERMARK_TEXT
+        font = ImageFont.truetype('arial.ttf', 20)
+        # text_width, text_height = draw.textsize(text, font)
+        (left, bottom, text_width, text_height) = draw.textbbox(xy=(0, 0), text=text, font=font)
 
-    # calculate the x,y coordinates of the text
-    margin = 10
-    x = width - text_width - margin
-    y = height - text_height - margin
+        # calculate the x,y coordinates of the text
+        margin = 10
+        x = width - text_width - margin
+        y = height - text_height - margin
 
-    # draw watermark in the bottom right corner
-    draw.text((x, y), text=text, font=font)
-    image.show()
-    global marked_image
-    marked_image = image
+        # draw watermark in the bottom right corner
+        draw.text((x, y), text=text, font=font)
+        image.show()
+        global marked_image
+        marked_image = image
 
 
 # Save watermarked image
 def save():
-    global save_directory
-    save_directory = filedialog.askdirectory()
-    prefix = file_name.rsplit('.')[0]
-    suffix = file_name.rsplit('.')[1]
-    save_path = save_directory + "/" + prefix + "_watermarked" + "." + suffix
-    marked_image.save(save_path)
+    if file_name == "":
+        file_label.config(text=f"Watermark a picture first.")
+    else:
+        global save_directory
+        save_directory = filedialog.askdirectory()
+        prefix = file_name.rsplit('.')[0]
+        suffix = file_name.rsplit('.')[1]
+        save_path = save_directory + "/" + prefix + "_watermarked" + "." + suffix
+        marked_image.save(save_path)
 
 
 def open_directory():
+    if save_directory == "":
+        file_label.config(
+            text=f"Now this only opens the default directory, you should first watermark and save an image."
+        )
     os.startfile(save_directory)
 
 
